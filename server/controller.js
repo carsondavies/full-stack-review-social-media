@@ -1,18 +1,24 @@
 module.exports = {
+  //TODO Get all posts
   getPosts: (req, res) => {
-    //TODO Get all posts
-    
-  },
-  addPost: (req, res) => {
-    //TODO Create new post
-  
-  },
-  editPost: (req, res) => {
-    //TODO Edit existing post
 
   },
+
+
+  //TODO Create new post
+  addPost: (req, res) => {
+
+  },
+
+
+  //TODO Edit existing post
+  editPost: (req, res) => {
+
+  },
+
+
+  //TODO Delete existing post
   deletePost: (req, res) => {
-    //TODO Delete existing post
-   
+
   }
 };
