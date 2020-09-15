@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { loginUser } from '../dux/authReducer'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 class Register extends Component {
@@ -20,6 +22,7 @@ class Register extends Component {
   handleRegister = () => {
     const { email, password } = this.state
     axios.post('/auth/register', { email, password }).then(res => {
+      this.props.loginUser(res.data)
       this.props.history.push('/dashboard')
     })
       .catch(err => {
@@ -70,4 +73,4 @@ class Register extends Component {
   }
 }
 
-export default Register
+export default connect(null, { loginUser })(Register)

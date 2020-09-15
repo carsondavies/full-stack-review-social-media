@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 //TODO Write methods, connect to JSX
 
@@ -7,13 +8,30 @@ class Edit extends React.Component {
     super(props)
 
     this.state = {
-      //something goes here
+      userInput: ''
     }
   }
 
-  handleCancel = () => {}
+  componentDidMount() {
+    this.setState({
+      userInput: this.props.post.content
+    })
+  }
 
-  handleChange = () => {}
+  handleCancel = () => {
+    this.props.toggleEdit()
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      userInput: e.target.value
+    })
+  }
+
+  handleSave = () => {
+    this.props.handleEdit(this.props.post.id, this.state.userInput)
+    this.props.toggleEdit()
+  }
 
   render() {
     return (
@@ -21,12 +39,9 @@ class Edit extends React.Component {
         <div>
           <input
             className="post-text"
-            value={
-              null
-              //something goes here
-            }
-            onChange={() => {
-              //something goes here
+            value={this.state.userInput}
+            onChange={(e) => {
+              this.handleChange(e)
             }}
           />
         </div>
@@ -34,7 +49,7 @@ class Edit extends React.Component {
           <button
             className="input-container-button-small"
             onClick={() => {
-              //something goes here
+              this.handleCancel()
             }}
           >
             Cancel
@@ -42,7 +57,7 @@ class Edit extends React.Component {
           <button
             className="input-container-button-small"
             onClick={() => {
-              //something goes here
+              this.handleSave()
             }}
           >
             Save
@@ -53,4 +68,6 @@ class Edit extends React.Component {
   }
 }
 
-export default Edit
+const mapStateToProps = reduxState => reduxState
+
+export default connect(mapStateToProps)(Edit)

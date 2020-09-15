@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getUser } from '../dux/authReducer'
+import axios from 'axios'
 import PostContainer from './PostContainer'
 
 //TODO Write all methods, connect to store, connect methods to jsx.
@@ -11,24 +14,59 @@ class Dashboard extends Component {
     }
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.props.isLoggedIn) {
+      this.props.getUser().catch((err) => {
+        this.props.history.push('/')
+      })
+    }
+    this.getPosts()
+  }
 
-  getPosts = () => {}
+  getPosts = () => {
+    axios.get('/api/posts').then(res => {
+      this.setState({
+        posts: res.data
+      })
+    })
+  }
 
-  handleChange = (e) => {}
+  handleChange = (e) => {
+    this.setState({
+      userInput: e.target.value
+    })
+  }
 
-  handleClick = () => {}
+  handleClick = () => {
+    const { userInput: content } = this.state
+    axios.post('/api/posts', { content }).then(res => {
+      this.setState({
+        posts: res.data,
+        userInput: ''
+      })
+    })
+  }
 
-  handleEdit = () => {}
+  handleEdit = (postId, content) => {
+    axios.put(`/api/posts/${postId}`, { content }).then(res => {
+      this.setState({
+        posts: res.data
+      })
+    })
+  }
 
-  handleDelete = () => {}
+  handleDelete = (postId) => {
+    axios.delete(`api/posts/${postId}`).then(res => {
+      this.setState({
+        posts: res.data
+      })
+    })
+  }
 
   render() {
     const mappedPosts = this.state.posts.map((post, index) => {
       return (
-        <PostContainer
-        //something goes here
-        />
+        <PostContainer post={post} key={post.id} handleEdit={this.handleEdit} handleDelete={this.handleDelete} />
       )
     })
     return (
@@ -39,16 +77,14 @@ class Dashboard extends Component {
             cols="60"
             rows="2"
             placeholder="New post..."
-            value={() => {
-              //something goes here
-            }}
-            onChange={() => {
-              //something goes here
+            value={this.state.userInput}
+            onChange={(e) => {
+              this.handleChange(e)
             }}
           />
           <button
             onClick={() => {
-              //something goes here
+              this.handleClick()
             }}
             className="input-container-button"
           >
@@ -65,4 +101,6 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard
+const mapStateToProps = reduxState => reduxState
+
+export default connect(mapStateToProps, { getUser })(Dashboard)
